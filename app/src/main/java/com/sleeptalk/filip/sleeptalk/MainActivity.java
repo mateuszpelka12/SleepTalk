@@ -24,21 +24,36 @@ public class MainActivity extends AppCompatActivity {
         // Android objects initialization
         Button recButton = (Button)findViewById(R.id.rec_button);
         datafile = new FileSaver(this);
-        WavFile file = new WavFile("/sdcard/Music/FB_MAT_1.wav");
+        WavFile file = new WavFile("/sdcard/sine.wav");
+//        WavFile file = new WavFile("/sdcard/Music/FB_MAT_1.wav");
+
         List<Double> wavBuffer = file.read();
-        Standarizer signalStandarizer = new Standarizer(wavBuffer, file.sampleRate);
-        signalStandarizer.decimate(16000);
-        signalStandarizer.standard();
-        signalStandarizer.lfilter(Arrays.asList(signalStandarizer.highPassCoeffs));
-        signalStandarizer.lfilter(Arrays.asList(new Double[]{1.0, -0.9735}));
-        Pair<List<Double>,Integer> signalParams = signalStandarizer.getSignal();
-        List<Double> stdSignal = signalParams.first;
+//        Standarizer signalStandarizer = new Standarizer(wavBuffer, file.sampleRate);
+//        signalStandarizer.decimate(16000);
+//        signalStandarizer.standard();
+//        signalStandarizer.lfilter(Arrays.asList(signalStandarizer.highPassCoeffs));
+//        signalStandarizer.preemphasis();
+//        Pair<List<Double>,Integer> signalParams = signalStandarizer.getSignal();
+//        List<Double> stdSignal = signalParams.first;
+
+
+//        List<Double> signal = new ArrayList<>();
+//        for(int i = 0; i < 256; i++){
+//            signal.add(0.0);
+//        }
+//        signal.set(128, 1.0);
+        FourierTransform ft = new FourierTransform();
+        List<ComplexNumber> result = ft.fft(wavBuffer.subList(0, 65536));
+        List<Double> resultList = new ArrayList<>();
+        for(ComplexNumber cmp: result){
+            resultList.add(ComplexNumber.abs(cmp));
+        }
+
         try {
-            datafile.save(stdSignal);
+            datafile.save(resultList);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         // OnClick listeners
         recButton.setOnClickListener(new View.OnClickListener() {

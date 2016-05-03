@@ -66,6 +66,11 @@ public class Standarizer {
         }
     }
 
+    // Preemphasis filtration
+    public void preemphasis(){
+        lfilter(Arrays.asList(new Double[]{1.0, -0.9735}));
+    }
+
     // FIR Filter
     public void lfilter(List<Double> coeffs){
         double signalSample;
