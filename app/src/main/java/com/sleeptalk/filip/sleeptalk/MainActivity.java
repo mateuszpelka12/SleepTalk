@@ -24,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
         // Android objects initialization
         Button recButton = (Button)findViewById(R.id.rec_button);
         datafile = new FileSaver(this);
-//        WavFile file = new WavFile("/sdcard/sine.wav");
+//        WavFile file = new WavFile("/sdcard/square.wav");
         WavFile file = new WavFile("/sdcard/Music/FB_MAT_1.wav");
 
         List<Double> wavBuffer = file.read();
@@ -37,15 +37,20 @@ public class MainActivity extends AppCompatActivity {
         List<Double> stdSignal = signalParams.first;
         int sampleRate = signalParams.second;
         VoiceDetector vad = new VoiceDetector(stdSignal, sampleRate);
-
+        List<Double> newSig = vad.removeSilence();
 //        for(int i = 0; i < 256; i++){
 //            signal.add(0.0);
 //        }
 //        signal.set(128, 1.0);
-
+//        List<Double> newSig = new ArrayList<>();
+//        FourierTransform ft = new FourierTransform();
+//        List<ComplexNumber> psd = ft.fft(FourierTransform.addZeros(wavBuffer.subList(0, 50000)));
+//        for(ComplexNumber cnp: psd){
+//            newSig.add(ComplexNumber.abs(cnp));
+//        }
 
         try {
-            datafile.save(stdSignal);
+            datafile.save(newSig);
         } catch (IOException e) {
             e.printStackTrace();
         }

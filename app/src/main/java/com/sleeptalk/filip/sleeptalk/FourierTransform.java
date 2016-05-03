@@ -1,5 +1,7 @@
 package com.sleeptalk.filip.sleeptalk;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,14 +10,14 @@ import java.util.List;
  */
 public class FourierTransform {
 
-    public List<ComplexNumber> dft(List<Double> signal){
+    public List<ComplexNumber> dft(List<Double> signal, int resolution){
         double angle;
         double nthSample;
         ComplexNumber outputSample;
         int sampleNumber = signal.size();
         List<ComplexNumber> result = new ArrayList<>();
         // First outputSample loop
-        for(int k = 0; k < sampleNumber; k++){
+        for(int k = 0; k < resolution; k++){
             // Multiply and accumulate, multiply signal sample with sine wave
             outputSample = new ComplexNumber(0, 0);
             for(int n = 0; n < sampleNumber; n++){
@@ -33,7 +35,6 @@ public class FourierTransform {
         }
         return result;
     }
-
 
     public List<ComplexNumber> fft(List<Double> signal){
 
@@ -57,7 +58,7 @@ public class FourierTransform {
         }
         // DFT for small arrays
         else if(N <= 32){
-            return dft(signal);
+            return dft(signal, N);
         }
         // If greater then 32 divide into two arrays with odd and even indexes
         else{
@@ -83,5 +84,25 @@ public class FourierTransform {
 
     }
 
+    public static double nextPow(int signalSize){
+        int counter = 0;
+        double power;
+        while(true){
+            power = Math.pow(2, counter);
+            if (power > signalSize){
+                return power;
+            }
+            counter++;
+        }
+    }
+
+    public static List<Double> addZeros(List<Double> signal){
+        int nxtPower = (int) nextPow(signal.size());
+        int diff = nxtPower - signal.size();
+        for(int i = 0; i < diff; i++ ){
+            signal.add(0.0);
+        }
+        return signal;
+    }
 
 }
