@@ -1,6 +1,7 @@
 package com.sleeptalk.filip.sleeptalk;
 
 import android.util.Log;
+import android.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,6 +13,7 @@ public class VoiceDetector {
 
     private int sampleRate;
     private List<Double> signal;
+    private List<ComplexNumber> framePSD;
     private List<List<Double>> framesBuffer;
     private static double FrameTime = 0.025;
     private static double FrameOverlap = 0.010;
@@ -24,7 +26,7 @@ public class VoiceDetector {
         this.framesBuffer = signalFraming.divide(FrameTime, FrameOverlap);
     }
 
-    public static List<Integer> cutSig(List<Integer> signal){
+    public static Pair<Integer, Integer> cutSig(List<Integer> signal){
         List<Integer> changeIndex = new ArrayList<>();
         List<Integer> areaSum = new ArrayList<>();
         // Primitive types
@@ -47,7 +49,7 @@ public class VoiceDetector {
 
         // If no noise exist
         if(changeIndex.size() == 2){
-            return signal;
+            new Pair<>(changeIndex.get(0), changeIndex.get(1));
         }
 
         // How big this area is
@@ -65,10 +67,8 @@ public class VoiceDetector {
         if(maxIndex != 0){
             distBackward = signal.subList(changeIndex.get(np - 1) , changeIndex.get(np)).size();
             // Insert zeros in  noise area
-            if(distBackward > distanceFromMax * maxValue){
-                for(int i = 0; i < changeIndex.get(np); i++){
-                    signal.set(i, 0);
-                }
+            if(distBackward < distanceFromMax * maxValue){
+                np = np - 1;
             }
         }
 
@@ -76,40 +76,11 @@ public class VoiceDetector {
         if(maxIndex < areaSum.size() - 1){
             distForward = signal.subList(changeIndex.get(nk) , changeIndex.get(nk + 1)).size();
             // Insert zeros in  noise area
-            if(distForward > distanceFromMax * maxValue){
-                for(int i = changeIndex.get(nk); i < signalSize; i++){
-                    signal.set(i, 0);
-                }
+            if(distForward < distanceFromMax * maxValue){
+                nk = nk + 2;
             }
         }
-        signal = fillWithOnes(signal);
-
-        return signal;
-    }
-
-    public static List<Integer> fillWithOnes(List<Integer> signal){
-        int signalSize = signal.size();
-        int np = 0;
-        int nk = signalSize;
-        // Find first non zero index
-        for(int n = 0; n < signalSize; n++){
-            if(signal.get(n) != 0){
-                np = n;
-                break;
-            }
-        }
-        // Find last non zero index
-        for(int i = signalSize - 1; i > 0; i--){
-            if(signal.get(i) != 0){
-                nk = i;
-                break;
-            }
-        }
-        // Fill with ones
-        for(int j = np ; j < nk + 1; j++){
-            signal.set(j, 1);
-        }
-        return signal;
+        return new Pair<>(changeIndex.get(np), changeIndex.get(nk));
     }
 
     // Find Zero Crossing Rate
@@ -165,31 +136,21 @@ public class VoiceDetector {
         return signal;
     }
 
-    public static List<Double> multiplyWithMask(List<Double> signal, List<Integer> mask){
-        int counter = 0;
-        int step = (signal.size() / mask.size()) + 2;
-        for(int n = 0; n < signal.size(); n++){
-            signal.set(n, signal.get(n) * mask.get(counter));
-            if(n % step == 0){
-                counter++;
-            }
-        }
-        return signal;
-    }
-
     // Detect signal and remove silence from it
     public List<Double> removeSilence(){
         List<Double> frame;
         List<Double> weight = new ArrayList<>();
         List<Integer> signalBinary = new ArrayList<>();
-        List<ComplexNumber> framePSD;
         Hamming window = new Hamming();
         FourierTransform fft = new FourierTransform();
         //Primitive types
         double alpha;
+        double scale;
         double sampMeas;
         double framePower;
         double frameZCR;
+        int firstIndex;
+        int secondIndex;
         int counter = 0;
         double trigger = 0;
         int nFames = framesBuffer.size();
@@ -205,8 +166,10 @@ public class VoiceDetector {
             for (ComplexNumber cnb: framePSD){
                 framePower += Math.pow(ComplexNumber.abs(cnb), 2);
             }
+            // Find frame features
             framePower = (1.0 / frameLength)*framePower;
             frameZCR = (1.0 / frameLength)*findZeroCrossingRate(frame);
+            // Collect 10 frames
             if(counter < 10){
                 weight.add(framePower*( 1 - frameZCR) * 1000);
             }
@@ -215,7 +178,7 @@ public class VoiceDetector {
                 trigger = Statistics.mean(weight) + alpha*Statistics.var(weight);
             }
             else{
-                sampMeas = framePower * ( 1 - frameZCR) * 1000;
+                sampMeas = framePower * (1 - frameZCR) * 1000;
                 if(sampMeas >= trigger){
                     signalBinary.add(1);
                 }
@@ -227,12 +190,11 @@ public class VoiceDetector {
             counter++;
         }
         signalBinary = humanInner(signalBinary);
-        signalBinary = cutSig(signalBinary);
-        signal = multiplyWithMask(signal, signalBinary);
-//        for(Integer a: signalBinary){
-//            aa.add((double)a);
-//        }
-        return signal;
+        Pair<Integer, Integer> points =  cutSig(signalBinary);
+        scale = (signal.size() / signalBinary.size());
+        firstIndex = (int) (points.first * scale);
+        secondIndex = (int) (points.second * scale);
+        return signal.subList(firstIndex, secondIndex);
     }
 
 
