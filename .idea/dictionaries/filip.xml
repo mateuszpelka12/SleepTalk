@@ -1,6 +1,8 @@
 <component name="ProjectDictionaryState">
   <dictionary name="filip">
     <words>
+      <w>filterbank</w>
+      <w>nfft</w>
       <w>preemphasis</w>
       <w>standarizer</w>
     </words>

@@ -11,17 +11,23 @@ import java.util.List;
  */
 public class VoiceDetector {
 
+    // Private variables
     private int sampleRate;
     private List<Double> signal;
-    private List<ComplexNumber> framePSD;
-    private List<List<Double>> framesBuffer;
     private static double FrameTime = 0.025;
     private static double FrameOverlap = 0.010;
     private static double distanceFromMax = 0.33;
 
+    // Public
+    public Hamming window;
+    public List<List<Double>> framesBuffer;
+    public List<List<ComplexNumber>> framesPSDBuffer;
+
     public VoiceDetector(List<Double> signal, int sampleRate){
         this.signal = signal;
+        window = new Hamming();
         this.sampleRate = sampleRate;
+        this.framesPSDBuffer = new ArrayList<>();
         FrameDivider signalFraming = new FrameDivider(signal, sampleRate);
         this.framesBuffer = signalFraming.divide(FrameTime, FrameOverlap);
     }
@@ -88,7 +94,7 @@ public class VoiceDetector {
         double signalSample;
         double sampleP1;
         double sampleP2;
-        double sigRef = 0;
+        double sigRef;
         int zerosCount = 0;
         int signalSize = signal.size();
         // Loop over samples
@@ -138,11 +144,7 @@ public class VoiceDetector {
 
     // Detect signal and remove silence from it
     public List<Double> removeSilence(){
-        List<Double> frame;
-        List<Double> weight = new ArrayList<>();
-        List<Integer> signalBinary = new ArrayList<>();
-        Hamming window = new Hamming();
-        FourierTransform fft = new FourierTransform();
+
         //Primitive types
         double alpha;
         double scale;
@@ -153,6 +155,12 @@ public class VoiceDetector {
         int secondIndex;
         int counter = 0;
         double trigger = 0;
+        List<Double> frame;
+        List<ComplexNumber> framePSD;
+        List<Double> weight = new ArrayList<>();
+        List<Integer> signalBinary = new ArrayList<>();
+        Hamming window = new Hamming();
+        FourierTransform fft = new FourierTransform();
         int nFames = framesBuffer.size();
         int frameLength = framesBuffer.get(0).size();
         // Build Hamming window
@@ -160,15 +168,19 @@ public class VoiceDetector {
         // Loop over frames
         for(List<Double> currentFrame: framesBuffer){
             frame = window.multiplyWithSignal(currentFrame);
+
             // Calculate signal PSD
             framePSD = fft.fft(FourierTransform.addZeros(frame));
+            framesPSDBuffer.add(framePSD);
             framePower = 0;
             for (ComplexNumber cnb: framePSD){
                 framePower += Math.pow(ComplexNumber.abs(cnb), 2);
             }
+
             // Find frame features
             framePower = (1.0 / frameLength)*framePower;
             frameZCR = (1.0 / frameLength)*findZeroCrossingRate(frame);
+
             // Collect 10 frames
             if(counter < 10){
                 weight.add(framePower*( 1 - frameZCR) * 1000);
@@ -196,6 +208,5 @@ public class VoiceDetector {
         secondIndex = (int) (points.second * scale);
         return signal.subList(firstIndex, secondIndex);
     }
-
 
 }

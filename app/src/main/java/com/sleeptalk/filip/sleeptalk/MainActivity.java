@@ -36,8 +36,8 @@ public class MainActivity extends AppCompatActivity {
         Pair<List<Double>,Integer> signalParams = signalStandarizer.getSignal();
         List<Double> stdSignal = signalParams.first;
         int sampleRate = signalParams.second;
-        VoiceDetector vad = new VoiceDetector(stdSignal, sampleRate);
-        List<Double> newSig = vad.removeSilence();
+        Mfcc mfcc = new Mfcc(stdSignal, sampleRate);
+        mfcc.compute();
 //        for(int i = 5000; i < 6000; i++){
 //            signal.insert(0.0);
 //        }
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //
         try {
-            datafile.save(newSig);
+            datafile.save(stdSignal);
         } catch (IOException e) {
             e.printStackTrace();
         }
