@@ -52,17 +52,12 @@ public class Standarizer {
     // Removes mean form signal and divide it by max value
     public void standard(){
         // Get maximum value
-        double maxValue = Collections.max(signal);
+        double maxValue = Statistics.max(signal);
         // Get average
-        double averageSum = 0;
-        for(Double elem: signal){
-            averageSum+=elem;
-        }
-        averageSum = averageSum/signal.size();
-
+        double average = Statistics.mean(signal);
         // Modify each element
         for(int i=0; i < signal.size(); i++){
-            signal.set(i, (signal.get(i) - averageSum)/maxValue);
+            signal.set(i, (signal.get(i) - average)/maxValue);
         }
     }
 

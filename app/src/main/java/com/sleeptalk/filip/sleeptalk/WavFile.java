@@ -95,19 +95,18 @@ public class WavFile {
             byteRate = read4BytesInt();
             blockAlign = read2BytesInt();
             bitsPerSample = read2BytesInt();
+            for(int i = 0; i < subchunk1Size - 16; i++)
+                wavFile.readByte();
             subchunk2ID = read4BytesString();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // Read wave file
-    public List<Double> read(){
+    public List<Double> readMono(){
         byte upper;
         byte lower;
         List<Double> wavBuffer = new ArrayList<>();
-        // Read header
-        wavHeaderInfo();
         // Read content from wav file
         try {
             while(wavFile.available() > 0){
@@ -118,6 +117,46 @@ public class WavFile {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return wavBuffer;
+    }
+
+    public List<Double> readStereo(){
+        byte upper;
+        byte lower;
+        double firstChannel;
+        double secondChannel;
+        List<Double> wavBuffer = new ArrayList<>();
+        // Read content from wav file
+        try {
+            while(wavFile.available() > 0){
+
+                // First Chanel sample
+                lower = wavFile.readByte();
+                upper = wavFile.readByte();
+                firstChannel = (double)(upper << 8 | lower & 0xFF) / 32768.0;
+                // Second Channel sample
+                lower = wavFile.readByte();
+                upper = wavFile.readByte();
+                secondChannel = (double)(upper << 8 | lower & 0xFF) / 32768.0;
+                wavBuffer.add((firstChannel + secondChannel) / 2);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return wavBuffer;
+    }
+
+    // Read wave file
+    public List<Double> read(){
+        List<Double> wavBuffer;
+        // Read header
+        wavHeaderInfo();
+        if(numChannels == 1){
+            wavBuffer = readMono();
+        }
+        else{
+            wavBuffer = readStereo();
         }
         return wavBuffer;
     }

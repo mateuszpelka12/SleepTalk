@@ -38,17 +38,17 @@ public class MainActivity extends AppCompatActivity {
         int sampleRate = signalParams.second;
         VoiceDetector vad = new VoiceDetector(stdSignal, sampleRate);
         List<Double> newSig = vad.removeSilence();
-//        for(int i = 0; i < 256; i++){
-//            signal.add(0.0);
+//        for(int i = 5000; i < 6000; i++){
+//            signal.insert(0.0);
 //        }
 //        signal.set(128, 1.0);
 //        List<Double> newSig = new ArrayList<>();
 //        FourierTransform ft = new FourierTransform();
-//        List<ComplexNumber> psd = ft.fft(FourierTransform.addZeros(wavBuffer.subList(0, 50000)));
+//        List<ComplexNumber> psd = ft.fft(FourierTransform.addZeros(wavBuffer.subList(0, 10000)));
 //        for(ComplexNumber cnp: psd){
 //            newSig.add(ComplexNumber.abs(cnp));
 //        }
-
+//
         try {
             datafile.save(newSig);
         } catch (IOException e) {
