@@ -32,5 +32,19 @@ public class FileSaver{
         fileWriter.close();
     }
 
+    // Save data to file
+    public void save3D(List<List<Double>> array3D) throws IOException {
+
+        for(List<Double> list: array3D){
+            for(Double b: list) {
+                fileWriter.write(b.toString());
+                fileWriter.newLine();
+            }
+            fileWriter.write("NA");
+            fileWriter.newLine();
+        }
+        fileWriter.close();
+    }
+
 
 }

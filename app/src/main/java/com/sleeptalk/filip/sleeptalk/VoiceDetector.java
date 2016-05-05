@@ -15,7 +15,7 @@ public class VoiceDetector {
     private int sampleRate;
     private List<Double> signal;
     private static double FrameTime = 0.025;
-    private static double FrameOverlap = 0.010;
+    private static double FrameOverlap = 0.015;
     private static double distanceFromMax = 0.33;
 
     // Public
@@ -155,13 +155,13 @@ public class VoiceDetector {
         int secondIndex;
         int counter = 0;
         double trigger = 0;
+
         List<Double> frame;
         List<ComplexNumber> framePSD;
         List<Double> weight = new ArrayList<>();
         List<Integer> signalBinary = new ArrayList<>();
         Hamming window = new Hamming();
         FourierTransform fft = new FourierTransform();
-        int nFames = framesBuffer.size();
         int frameLength = framesBuffer.get(0).size();
         // Build Hamming window
         window.build(frameLength);
@@ -206,6 +206,8 @@ public class VoiceDetector {
         scale = (signal.size() / signalBinary.size());
         firstIndex = (int) (points.first * scale);
         secondIndex = (int) (points.second * scale);
+        framesBuffer = framesBuffer.subList(points.first + 11, points.second + 11);
+        framesPSDBuffer = framesPSDBuffer.subList(points.first + 11, points.second + 11);
         return signal.subList(firstIndex, secondIndex);
     }
 

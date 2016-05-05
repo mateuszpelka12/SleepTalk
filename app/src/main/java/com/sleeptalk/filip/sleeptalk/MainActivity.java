@@ -37,23 +37,34 @@ public class MainActivity extends AppCompatActivity {
         List<Double> stdSignal = signalParams.first;
         int sampleRate = signalParams.second;
         Mfcc mfcc = new Mfcc(stdSignal, sampleRate);
-        mfcc.compute();
-        List<List<Double>>newSigBuff = mfcc.melFilterBank(512);
-        List<Double> newSig = newSigBuff.get(9);
+        List<List<Double>> mfccCoefs = mfcc.compute();
 
-//        for(int i = 5000; i < 6000; i++){
-//            signal.insert(0.0);
+
+
+        /// FFT Tet
+//        List<Double> nlist = new ArrayList<>();
+//        for(int i = 0 ; i < 128; i++){
+//            nlist.add(0.0);
 //        }
-//        signal.set(128, 1.0);
 //        List<Double> newSig = new ArrayList<>();
 //        FourierTransform ft = new FourierTransform();
-//        List<ComplexNumber> psd = ft.fft(FourierTransform.addZeros(wavBuffer.subList(0, 10000)));
+//        wavBuffer = wavBuffer.subList(0, 256);
+//        wavBuffer.addAll(nlist);
+//        List<ComplexNumber> psd = ft.fft(FourierTransform.addZeros(wavBuffer));
 //        for(ComplexNumber cnp: psd){
-//            newSig.add(ComplexNumber.abs(cnp));
+//            newSig.add(Math.pow(ComplexNumber.abs(cnp), 2));
 //        }
 //
+//        List<Double> testlist = wavBuffer;
+//        for(int n = 0; n < testlist.size(); n++){
+//            testlist.set(n, Math.pow(testlist.get(n),2 ));
+//        }
+//        double aa = Statistics.sum(testlist);
+//        double bb = (1.0/newSig.size())*Statistics.sum(newSig);
+//        newSig.size();
+////
         try {
-            datafile.save(newSig);
+            datafile.save3D(mfccCoefs);
         } catch (IOException e) {
             e.printStackTrace();
         }

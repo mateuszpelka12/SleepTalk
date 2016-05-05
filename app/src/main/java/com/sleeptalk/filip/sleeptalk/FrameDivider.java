@@ -28,7 +28,7 @@ public class FrameDivider {
         int signalSize = signal.size();
         int frameSamples = (int) (frameTime*sampleRate);
         int overlapSamples = (int) (timeOverlap*sampleRate);
-        int stepNumber = signalSize / overlapSamples;
+        int stepNumber = signalSize / (frameSamples - overlapSamples);
 
         List<Double> frame = new ArrayList<>();
         List<List<Double>> framesBuffer = new ArrayList<>();
@@ -36,7 +36,7 @@ public class FrameDivider {
         // Add zeros to signal
         appendZeros(frameSamples);
         for(int counter = 0; counter < stepNumber; counter++){
-            startFrame = counter * overlapSamples;
+            startFrame = counter * (frameSamples - overlapSamples);
             endFrame = startFrame + frameSamples;
             frame = signal.subList(startFrame, endFrame);
             framesBuffer.add(frame);
