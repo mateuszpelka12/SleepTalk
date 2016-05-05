@@ -5,6 +5,12 @@ import java.util.List;
 
 /**
  * Created by filip on 03.05.16.
+ * PL: FrameDivider zawiera metody służące
+ * do podziału sygnału na zbiór ramek.
+ * Możemy przyjąć, że każda ramka posiada stacjonarne
+ * widmo. Ramki mają określony czas trwania(frameTime)
+ * oraz czas nakładkowania timeOverlap.
+ *
  */
 public class FrameDivider {
 

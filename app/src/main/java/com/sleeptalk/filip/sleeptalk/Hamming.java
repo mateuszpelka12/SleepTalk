@@ -6,6 +6,10 @@ import java.util.List;
 
 /**
  * Created by filip on 03.05.16.
+ * PL: Klasa zawiera implementacje interfejsu okna,
+ * reprezentuje ona okno Hamminga.
+ * Metoda build tworzy okno o określonym rozmiarze
+ * Metoda multiplyWithSignal wymnaża sygnał z oknem
  */
 public class Hamming implements Window{
 

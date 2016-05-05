@@ -8,6 +8,8 @@ import java.util.List;
 
 /**
  * Created by filip on 28.04.16.
+ * PL: Klasa pomocnicza, służyła autorą do zapisywania danych
+ * do pliku w celu późniejszego ich przetwarzania.
  */
 public class FileSaver{
 

@@ -1,15 +1,16 @@
 package com.sleeptalk.filip.sleeptalk;
 
-import android.util.Log;
 import android.util.Pair;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Created by filip on 01.05.16.
+ * PL: Klasa wykorzystywana do przeprowadzenia zabiegu
+ * standaryzacji sygnału, umożliwia wykonanie czynności
+ * które mają na celu zniwelowanie różnic między sygnałami
+ * pochodzącymi z różnych źródeł oraz usunięcie redunantnej informacji.
  */
 public class Standarizer {
 

@@ -5,6 +5,11 @@ import java.util.List;
 
 /**
  * Created by filip on 28.04.16.
+ * PL: Klasa służąca do ekstrakcji cech wykorzystywanych
+ * w dalszej części przetwarzania. Zawiera ona metody takie
+ * jak hertz2Mel bądz mel2Hertz służące to konwersji ze skali
+ * melowej do skali w Hertzach, jak i również metody do tworzenia
+ * banku filtrów melowych oraz obliczania współczynników mel-cepstralnych
  */
 public class Mfcc{
 
@@ -33,7 +38,7 @@ public class Mfcc{
         framesPSDBuffer = vad.framesPSDBuffer;
         framesBuffer = vad.framesBuffer;
         lowFilterBankFreq = 300;
-        highFilterBankFreq = sampleRate/2;
+        highFilterBankFreq = sampleRate / 2;
     }
 
 

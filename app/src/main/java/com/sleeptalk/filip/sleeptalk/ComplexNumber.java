@@ -2,6 +2,9 @@ package com.sleeptalk.filip.sleeptalk;
 
 /**
  * Created by filip on 02.05.16.
+ * PL : Instancja klasy reprezentuje liczbę zespolona,
+ * Posiada również metody statyczne umożliwiające podstawowe operacje na liczbach
+ * zespolonych.
  */
 public class ComplexNumber {
 

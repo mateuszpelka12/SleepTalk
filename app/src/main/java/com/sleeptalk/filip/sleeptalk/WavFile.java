@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Created by filip on 28.04.16.
+ * PL: Umozliwia otwieranie plików WAV
+ * oraz wydobywanie informacji z nagłówka pliku.
  */
 public class WavFile {
 

@@ -5,6 +5,9 @@ import java.util.List;
 
 /**
  * Created by filip on 03.05.16.
+ * PL: Klasa pomocnicza zawierająca kilka
+ * metod "statystycznych" służących do wyliczenia
+ * średniej, sumy bądz wariancji.
  */
 public class Statistics {
     public static double mean(List<Double> list){

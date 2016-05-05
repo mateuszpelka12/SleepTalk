@@ -7,6 +7,11 @@ import java.util.List;
 
 /**
  * Created by filip on 02.05.16.
+ * PL: Autorska implementacja transformaty Fouriera,
+ * zastosowano w niej algorytm DFT, jak i algorytm
+ * Cooleya - Turkeya w celu poprawiania wydajności.
+ * Wydajność algorytmu można dostosować zminiając parametr
+ * fftMinimumPointsNumber
  */
 public class FourierTransform {
 

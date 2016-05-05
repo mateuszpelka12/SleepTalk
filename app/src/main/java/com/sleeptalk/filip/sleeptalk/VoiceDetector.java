@@ -1,13 +1,13 @@
 package com.sleeptalk.filip.sleeptalk;
 
-import android.util.Log;
 import android.util.Pair;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by filip on 03.05.16.
+ * PL: Autorska implementacja VAD.
+ * Jej celem jest usuwanie ciszy z sygnału.
  */
 public class VoiceDetector {
 
