@@ -10,6 +10,8 @@ import java.util.List;
  */
 public class FourierTransform {
 
+    private static int fftMinimumPointsNumber = 2;
+
     public List<ComplexNumber> dft(List<Double> signal, int resolution){
         double angle;
         double nthSample;
@@ -57,7 +59,7 @@ public class FourierTransform {
             throw new IllegalArgumentException("size of signal must be a power of 2");
         }
         // DFT for small arrays
-        else if(N <= 32){
+        else if(N <= fftMinimumPointsNumber){
             return dft(signal, N);
         }
         // If greater then 32 divide into two arrays with odd and even indexes

@@ -38,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
         int sampleRate = signalParams.second;
         Mfcc mfcc = new Mfcc(stdSignal, sampleRate);
         mfcc.compute();
+        List<List<Double>>newSigBuff = mfcc.melFilterBank(512);
+        List<Double> newSig = newSigBuff.get(9);
+
 //        for(int i = 5000; i < 6000; i++){
 //            signal.insert(0.0);
 //        }
@@ -50,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 //        }
 //
         try {
-            datafile.save(stdSignal);
+            datafile.save(newSig);
         } catch (IOException e) {
             e.printStackTrace();
         }
